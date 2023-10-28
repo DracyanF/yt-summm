@@ -2,3 +2,4 @@ streamlit
 langchain
 pandas
 tabulate
+huggingface-hub==0.11.0

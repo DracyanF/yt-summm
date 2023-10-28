@@ -1,12 +1,9 @@
-streamlit>=1.26.0
-click==7.1.2
 gradio==2.1.4
-huggingface-hub==0.0.19
-librosa==0.8.1
-numpy==1.19.5
+youtube-transcript-api==0.4.1
 pytube==11.0.1
-soundfile==0.10.3.post1
-streamlit==0.88.0
 transformers==4.8.1
 torch==1.9.1
-youtube-transcript-api==0.4.1
+huggingface-hub==0.0.19
+librosa==0.8.1
+soundfile==0.10.3.post1
+streamlit==1.0.0  # Ensure you are using the appropriate version of Streamlit

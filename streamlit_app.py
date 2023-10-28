@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from classes import run_request  # Assuming run_request comes from the 'classes' module
+  # Assuming run_request comes from the 'classes' module
 from langchain import HuggingFaceHub, LLMChain, PromptTemplate
 
 # Page title

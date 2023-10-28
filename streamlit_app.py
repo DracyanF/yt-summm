@@ -18,13 +18,9 @@ def load_csv(input_csv):
 def generate_response(csv_file, input_query, hf_key):
     llm = HuggingFaceHub(huggingfacehub_api_token=hf_key, repo_id="TheBloke/Llama-2-70B-chat-GPTQ", model_kwargs={"temperature": 0.1, "max_new_tokens": 500})
     df = load_csv(csv_file)
-    prompt = f"""Your task is to answer the following question based on the dataframe `df`:
-    {input_query}"""
-    
-    llm_prompt = PromptTemplate.from_template(prompt)
-    llm_chain = LLMChain(llm=llm, prompt=llm_prompt)
-    response = llm_chain.predict()
-    return st.success(response)
+    agent = create_pandas_dataframe_agent(llm, df, verbose=True)
+    response = agent.run(input_query)
+return st.success(response)
 
 # Input widgets
 uploaded_file = st.file_uploader('Upload a CSV file', type=['csv'])

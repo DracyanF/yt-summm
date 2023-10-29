@@ -1,42 +1,112 @@
-import streamlit as st
 import pandas as pd
-  # Assuming run_request comes from the 'classes' module
-from langchain import HuggingFaceHub, LLMChain, PromptTemplate
-from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
-# Page title
-st.set_page_config(page_title='🦜🔗 Ask the Data App')
-st.title('🦜🔗 Ask the Data App')
+import streamlit as st
+import warnings
+from classes import get_primer, format_question, run_request
+warnings.filterwarnings("ignore")
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.set_page_config(layout="wide", page_title="DocSense")
 
-# Load CSV file
-def load_csv(input_csv):
-    df = pd.read_csv(input_csv)
-    with st.expander('See DataFrame'):
-        st.write(df)
-    return df
+st.markdown("<h1 style='text-align: center; font-weight:bold; font-family:'Trebuchet MS', sans-serif; padding-top: 0rem;'> \
+            DocSense</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;padding-top: 0rem;'>by Adarsh Agarwal, Saakar Chaudhary & Farhan Shaikh</h2>", unsafe_allow_html=True)
 
-# Generate LLM response
-def generate_response(csv_file, input_query, hf_key):
-  llm = HuggingFaceHub(huggingfacehub_api_token=hf_key, repo_id="codellama/CodeLlama-34b-Instruct-hf", model_kwargs={"temperature": 0.1, "max_new_tokens": 500})
-  df = load_csv(csv_file)
-  agent = create_pandas_dataframe_agent(llm, df, verbose=True)
-  response = agent.run(input_query)
-  return st.success(response)
+# Sidebar elements
 
-# Input widgets
-uploaded_file = st.file_uploader('Upload a CSV file', type=['csv'])
-question_list = [
-    'How many rows are there?',
-    'What is the range of values for MolWt with logS greater than 0?',
-    'How many rows have MolLogP value greater than 0.',
-    'Other']
-query_text = st.selectbox('Select an example query:', question_list, disabled=not uploaded_file)
-hf_key = st.text_input('HuggingFace API Key', type='password', disabled=not (uploaded_file and query_text))
+# ... (Other sidebar elements remain unchanged)
 
-# App logic
-if query_text == 'Other':
-    query_text = st.text_input('Enter your query:', placeholder='Enter query here ...', disabled=not uploaded_file)
-if not hf_key.startswith('hf_'):
-    st.warning('Please enter your HuggingFace API key!', icon='⚠')
-if hf_key.startswith('hf_') and (uploaded_file is not None):
-    st.header('Output')
-    generate_response(uploaded_file, query_text, hf_key)
+if "datasets" not in st.session_state:
+    datasets = {}
+    # Preload datasets
+    datasets["Movies"] = pd.read_csv("movies.csv")
+    datasets["Cars"] =pd.read_csv("cars.csv")
+    datasets["Colleges"] =pd.read_csv("colleges.csv")
+    st.session_state["datasets"] = datasets
+else:
+    # use the list already loaded
+    datasets = st.session_state["datasets"]
+
+hf_key = st.text_input(label = ":hugging_face: HuggingFace Key:", help="Required for Code Llama", type="password")
+
+# ... (The part where you handle datasets remains unchanged)
+with st.sidebar:
+    mode = st.radio("Select Mode:", ("Visualize", "Chat"))
+    # First we want to choose the dataset, but we will fill it with choices once we've loaded one
+    dataset_container = st.empty()
+
+    # Add facility to upload a dataset
+    try:
+        uploaded_file = st.file_uploader(":computer: Load a CSV file:", type="csv")
+        index_no=0
+        if uploaded_file:
+            # Read in the data, add it to the list of available datasets. Give it a nice name.
+            file_name = uploaded_file.name[:-4].capitalize()
+            datasets[file_name] = pd.read_csv(uploaded_file)
+            # We want to default the radio button to the newly added dataset
+            index_no = len(datasets)-1
+    except Exception as e:
+        st.error("File failed to load. Please select a valid CSV file.")
+        print("File failed to load.\n" + str(e))
+    # Radio buttons for dataset choice
+    chosen_dataset = dataset_container.radio(":bar_chart: Choose your data:",datasets.keys(),index=index_no)#,horizontal=True,)
+
+if mode == "Visualize":
+  question = st.text_area(":eyes: What would you like to visualise?", height=10)
+  go_btn = st.button("Go...")
+  
+  # Execute chatbot query
+  if go_btn:
+      if not hf_key.startswith('hf_'):
+          st.error("Please enter a valid HuggingFace API key.")
+      else:
+          st.subheader("Code Llama")
+          try:
+              # Get the primer for this dataset
+              primer1, primer2 = get_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]') 
+              # Format the question 
+              question_to_ask = format_question(primer1, primer2, question, "Code Llama")   
+              # Run the question
+              answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
+              # Add to the beginning of the script
+              answer = primer2 + answer
+              plot_area = st.empty()
+              plot_area.pyplot(exec(answer))           
+          except Exception as e:
+              st.error(f"An error occurred: {e}")
+
+elif mode == "Chat":
+    chat_question = st.text_area("What question do you have about the dataset?", height=10)
+    chat_btn = st.button("Ask")
+    if chat_btn:
+      try:
+          # Format the question and execute the query here
+          primer = get_text_primer(datasets[chosen_dataset])
+          question_to_ask = format_question(primer, chat_question, "Code Llama") 
+          answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
+          st.text("Answer: " + answer)
+      except Exception as e:
+          st.error(f"An error occurred: {e}")
+
+# ... (The part where you display the datasets in tabs and add the footer remains unchanged)
+tab_list = st.tabs(datasets.keys())
+
+# Load up each tab with a dataset
+for dataset_num, tab in enumerate(tab_list):
+    with tab:
+        # Can't get the name of the tab! Can't index key list. So convert to list and index
+        dataset_name = list(datasets.keys())[dataset_num]
+        st.subheader(dataset_name)
+        st.dataframe(datasets[dataset_name],hide_index=True)
+
+# Insert footer to reference dataset origin  
+footer="""<style>.footer {position: fixed;left: 0;bottom: 0;width: 100%;text-align: center;}</style><div class="footer">
+<p> <a style='display: block; text-align: center;'> Datasets courtesy of NL4DV, nvBench and ADVISor </a></p></div>"""
+st.caption("Datasets courtesy of NL4DV, nvBench and ADVISor")
+
+# Hide menu and footer
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)

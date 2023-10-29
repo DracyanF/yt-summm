@@ -76,5 +76,6 @@ def get_text_primer(df_dataset):
             primer_desc = primer_desc + "\nThe column '" + i + "' is of type " + str(df_dataset.dtypes[i]) + " and contains numeric values. "
             
     primer_desc = primer_desc + "\nPlease answer the following question based on the dataset: "
-    primer_code = ""
+    primer_code = "import pandas as pd"
+    primer_code = primer_code + "df=" + df_name + ".copy()\n"
     return primer_desc, primer_code

@@ -65,7 +65,7 @@ def get_text_primer(df_dataset,df_name):
     # Primer function to take a dataframe
     # and the name of the columns
     # and any columns with less than 20 unique values it adds the values to the primer
-    primer_desc = "The dataset has columns: '" \
+    primer_desc = "Use a dataframe called df from data_file.csv with columns '" \
         + "','".join(str(x) for x in df_dataset.columns) + "'. "
 
     for i in df_dataset.columns:

@@ -81,6 +81,7 @@ elif mode == "Chat":
             
             if chat_btn:
                 try:
+                    output_dict={}
                     primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]')
                     question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
                     answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
@@ -92,7 +93,7 @@ elif mode == "Chat":
                     sys.stdout = new_stdout
             
                     # Execute the code
-                    exec(answer)
+                    exec(answer, output_dict)
                     
                     # Restore stdout and get the captured output
                     sys.stdout = old_stdout

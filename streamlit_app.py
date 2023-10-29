@@ -74,19 +74,19 @@ if mode == "Visualize":
               st.error(f"An error occurred: {e}")
 
 elif mode == "Chat":
-    chat_question = st.text_area("What question do you have about the dataset?", height=10)
-    chat_btn = st.button("Ask")
-    if chat_btn:
-      try:
-          # Format the question and execute the query here
-          primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]') 
-          question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama") 
-          answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
-          answer = primer2 + answer
-          answer = exec(answer)
-          st.text(answer)
-      except Exception as e:
-          st.error(f"An error occurred: {e}")
+            chat_question = st.text_area("What question do you have about the dataset?", height=10)
+            chat_btn = st.button("Ask")
+            if chat_btn:
+                try:
+                    output_dict = {}
+                    primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]') 
+                    question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
+                    answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
+                    answer = primer2 + answer
+                    exec(answer, output_dict)
+                    st.text(f"Captured Variables: {output_dict}")  
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)
 tab_list = st.tabs(datasets.keys())

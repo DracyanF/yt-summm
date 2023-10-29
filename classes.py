@@ -76,4 +76,5 @@ def get_text_primer(df_dataset):
             primer_desc = primer_desc + "\nThe column '" + i + "' is of type " + str(df_dataset.dtypes[i]) + " and contains numeric values. "
             
     primer_desc = primer_desc + "\nPlease answer the following question based on the dataset: "
-    return primer_desc
+    primer_code = ""
+    return primer_desc, primer_code

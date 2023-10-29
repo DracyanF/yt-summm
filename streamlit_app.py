@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
   # Assuming run_request comes from the 'classes' module
 from langchain import HuggingFaceHub, LLMChain, PromptTemplate
-from langchain_experimental.agents import create_pandas_dataframe_agent
-
+from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
 # Page title
 st.set_page_config(page_title='🦜🔗 Ask the Data App')
 st.title('🦜🔗 Ask the Data App')
@@ -17,7 +16,7 @@ def load_csv(input_csv):
 
 # Generate LLM response
 def generate_response(csv_file, input_query, hf_key):
-  llm = HuggingFaceHub(huggingfacehub_api_token=hf_key, repo_id="TheBloke/Llama-2-70B-chat-GPTQ", model_kwargs={"temperature": 0.1, "max_new_tokens": 500})
+  llm = HuggingFaceHub(huggingfacehub_api_token=hf_key, repo_id="codellama/CodeLlama-34b-Instruct-hf", model_kwargs={"temperature": 0.1, "max_new_tokens": 500})
   df = load_csv(csv_file)
   agent = create_pandas_dataframe_agent(llm, df, verbose=True)
   response = agent.run(input_query)

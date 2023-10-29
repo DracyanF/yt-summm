@@ -80,7 +80,7 @@ elif mode == "Chat":
       try:
           # Format the question and execute the query here
           primer = get_text_primer(datasets[chosen_dataset])
-          question_to_ask = format_question(primer, chat_question, "Code Llama") 
+          question_to_ask = format_question(primer, "", chat_question, "Code Llama") 
           answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
           st.text("Answer: " + answer)
       except Exception as e:

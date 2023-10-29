@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 import warnings
+import sys
+import io
 from classes import get_primer, format_question, run_request, get_text_primer
 warnings.filterwarnings("ignore")
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -74,20 +76,34 @@ if mode == "Visualize":
               st.error(f"An error occurred: {e}")
 
 elif mode == "Chat":
-    chat_question = st.text_area("What question do you have about the dataset?", height=10)
-    chat_btn = st.button("Ask")
-    if chat_btn:
-        try:
-            output_dict = {}
-            primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]') 
-            question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
-            answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
-            answer = primer2 + answer
-            op_area = st.empty()
-            op_area.exec(answer, output_dict)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-
+            chat_question = st.text_area("What question do you have about the dataset?", height=10)
+            chat_btn = st.button("Ask")
+            
+            if chat_btn:
+                try:
+                    primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]')
+                    question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
+                    answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
+                    answer = primer2 + answer
+                    
+                    # Redirect stdout to capture output
+                    old_stdout = sys.stdout
+                    new_stdout = io.StringIO()
+                    sys.stdout = new_stdout
+            
+                    # Execute the code
+                    exec(answer)
+                    
+                    # Restore stdout and get the captured output
+                    sys.stdout = old_stdout
+                    captured_output = new_stdout.getvalue()
+            
+                    # Display the captured output
+                    st.write("Captured Output:")
+                    st.write(captured_output)
+            
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)
 tab_list = st.tabs(datasets.keys())
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import warnings
-from classes import get_primer, format_question, run_request
+from classes import get_primer, format_question, run_request, get_text_primer
 warnings.filterwarnings("ignore")
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(layout="wide", page_title="DocSense")

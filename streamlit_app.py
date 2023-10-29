@@ -3,6 +3,7 @@ import streamlit as st
 import warnings
 import sys
 import io
+from tabulate import tabulate
 from classes import get_primer, format_question, run_request, get_text_primer
 warnings.filterwarnings("ignore")
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -87,23 +88,8 @@ elif mode == "Chat":
                     answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
                     answer = primer2 + answer
                     output_dict['datasets'] = datasets
-                            
-                    # Redirect stdout to capture output
-                    old_stdout = sys.stdout
-                    new_stdout = io.StringIO()
-                    sys.stdout = new_stdout
-            
-                    # Execute the code
-                    exec(answer, output_dict)
-                    
-                    # Restore stdout and get the captured output
-                    sys.stdout = old_stdout
-                    captured_output = new_stdout.getvalue()
-            
-                    # Display the captured output
-                    st.write("Captured Output:")
-                    st.write(captured_output)
-            
+                    op_area = st.empty()
+                    op_area.tabulate(exec(answer, output_dict))
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)

@@ -83,8 +83,8 @@ elif mode == "Chat":
             question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
             answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
             answer = primer2 + answer
-            exec(answer, output_dict)
-            st.text(f"Captured Variables: {output_dict}")  
+            op_area = st.empty()
+            op_area.exec(answer, output_dict)
         except Exception as e:
             st.error(f"An error occurred: {e}")
 

@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
   # Assuming run_request comes from the 'classes' module
 from langchain import HuggingFaceHub, LLMChain, PromptTemplate
+from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
 
 # Page title
 st.set_page_config(page_title='🦜🔗 Ask the Data App')

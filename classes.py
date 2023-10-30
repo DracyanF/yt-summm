@@ -52,7 +52,7 @@ def get_primer(df_dataset,df_name):
         elif df_dataset.dtypes[i]=="int64" or df_dataset.dtypes[i]=="float64":
             primer_desc = primer_desc + "\nThe column '" + i + "' is type " + str(df_dataset.dtypes[i]) + " and contains numeric values. "   
     primer_desc = primer_desc + "\nLabel the x and y axes appropriately."
-    primer_desc = primer_desc + "\nAdd a title. Set the fig suptitle as empty."
+    primer_desc = primer_desc + "\nAdd a title. Don't put any fig suptitle."
     primer_desc = primer_desc + "{}" # Space for additional instructions if needed
     primer_desc = primer_desc + "\nUsing Python version 3.9.12, create a script using the dataframe df to graph the following: "
     pimer_code = "import pandas as pd\nimport matplotlib.pyplot as plt\n"

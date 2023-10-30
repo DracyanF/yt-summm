@@ -86,20 +86,10 @@ elif mode == "Chat":
                     primer1, primer2 = get_text_primer(datasets[chosen_dataset], 'datasets["' + chosen_dataset + '"]')
                     question_to_ask = format_question(primer1, primer2, chat_question, "Code Llama")
                     answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
-                    # answer = primer2 + answer
-                    # output_dict['datasets'] = datasets
-                    # st.write(answer)
-                    # exec(answer, output_dict)
-                    if primer2 is not None:
-                        answer = primer2 + (answer if answer is not None else "")
-                    else:
-                        answer = answer if answer is not None else ""
+                    answer = primer2 + answer
                     output_dict['datasets'] = datasets
                     st.write(answer)
-                    st.write("Output:" + exec(answer, output_dict))
-
-                   
-            
+                    exec(answer, output_dict)
                     answer = result()
                     st.write(answer)
                 except Exception as e:

@@ -74,8 +74,8 @@ def get_text_primer(df_dataset,df_name):
                 "','".join(str(x) for x in df_dataset[i].drop_duplicates()) + "'. "
         elif df_dataset.dtypes[i]=="int64" or df_dataset.dtypes[i]=="float64":
             primer_desc = primer_desc + "\nThe column '" + i + "' is of type " + str(df_dataset.dtypes[i]) + " and contains numeric values. "
-    primer_desc = primer_desc + "\nPlease ensure that the output is generated using 'print' statement with tabulate only, keep tablefmt as html."
-    primer_desc = primer_desc + "\nUsing Python version 3.9.12, create a script using the dataframe df to answer the following, keep the column names in the output too:"
+    primer_desc = primer_desc + "\nPlease ensure that the output is generated using 'print' statement with tabulate only, keep tablefmt as html. In the output, mention the column name too."
+    primer_desc = primer_desc + "\nUsing Python version 3.9.12, create a script using the dataframe df to answer the following:"
     primer_code = "import pandas as pd \nfrom tabulate import tabulate \n"
     primer_code = primer_code + "df=" + df_name + ".copy()\n"
     return primer_desc, primer_code

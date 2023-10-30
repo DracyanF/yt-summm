@@ -72,6 +72,7 @@ if mode == "Visualize":
               answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
               # Add to the beginning of the script
               answer = primer2 + answer
+              st.write(answer)
               plot_area = st.empty()
               plot_area.pyplot(exec(answer))           
           except Exception as e:

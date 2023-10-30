@@ -104,7 +104,7 @@ elif mode == "Chat":
                                 st.write(answer)
                                 with stdoutIO() as s:
                                             exec(answer)
-                                st.write(s.getvalue())
+                                st.dataframe(s.getvalue())
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)

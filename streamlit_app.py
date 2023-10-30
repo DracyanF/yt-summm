@@ -88,6 +88,7 @@ elif mode == "Chat":
                     answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
                     answer = primer2 + answer
                     output_dict['datasets'] = datasets
+                    st.write(answer)
                     st.write("Output:" + eval(answer, output_dict))
                 except Exception as e:
                     st.error(f"An error occurred: {e}")

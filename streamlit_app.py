@@ -101,8 +101,7 @@ elif mode == "Chat":
                     output_dict['datasets'] = datasets
                     st.write(answer)
                     with stdoutIO() as s:
-                            try:
-                                        exec(answer)
+                                exec(answer)
                     st.write("out:", s.getvalue())
                 except Exception as e:
                     st.error(f"An error occurred: {e}")

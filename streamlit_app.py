@@ -90,7 +90,8 @@ elif mode == "Chat":
                     output_dict['datasets'] = datasets
                     st.write(answer)
                     exec(answer, output_dict)
-                    st.write(result(datasets[chosen_dataset]))
+                    answer = result()
+                    st.write(answer)
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)

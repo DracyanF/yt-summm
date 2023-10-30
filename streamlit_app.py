@@ -88,7 +88,7 @@ elif mode == "Chat":
                     answer = run_request(question_to_ask, "CodeLlama-34b-Instruct-hf", alt_key=hf_key)
                     answer = primer2 + answer
                     output_dict['datasets'] = datasets
-                    st.write(tabulate(exec(answer, output_dict)))
+                    st.write("Output:" + eval(answer, output_dict))
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)

@@ -2,7 +2,8 @@ import pandas as pd
 import streamlit as st
 import warnings
 import sys
-import io
+from io import StringIO
+import contextlib
 from tabulate import tabulate
 from classes import get_primer, format_question, run_request, get_text_primer
 warnings.filterwarnings("ignore")
@@ -76,10 +77,20 @@ if mode == "Visualize":
           except Exception as e:
               st.error(f"An error occurred: {e}")
 
+
 elif mode == "Chat":
             chat_question = st.text_area("What question do you have about the dataset?", height=10)
             chat_btn = st.button("Ask")
-            
+
+            @contextlib.contextmanager
+            def stdoutIO(stdout=None):
+                old = sys.stdout
+                if stdout is None:
+                    stdout = StringIO()
+                sys.stdout = stdout
+                yield stdout
+                sys.stdout = old
+
             if chat_btn:
                 try:
                     output_dict={}
@@ -89,8 +100,10 @@ elif mode == "Chat":
                     answer = primer2 + answer
                     output_dict['datasets'] = datasets
                     st.write(answer)
-                    answer = exec(answer)
-                    st.write(answer)
+                    with stdoutIO() as s:
+                            try:
+                                        exec(answer)
+                    st.write("out:", s.getvalue())
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)

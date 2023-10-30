@@ -89,8 +89,8 @@ elif mode == "Chat":
                     answer = primer2 + answer
                     output_dict['datasets'] = datasets
                     st.write(answer)
-                    answer = exec(answer, output_dict
-                    st.write(answer.stdout)
+                    answer = exec(answer)
+                    st.write(answer)
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 # ... (The part where you display the datasets in tabs and add the footer remains unchanged)
